@@ -366,7 +366,9 @@ def get_controller_and_access(c_name, username):
                               'access: mEdge.access}) '
                'RETURN {access: cEdge.access, name: controller.name, '
                        'models: models, type: controller.type}')
-    return execute_aql_query(aql, rawResults=True, c_id=c_id, u_id=u_id)[0]
+    result = execute_aql_query(aql, rawResults=True, c_id=c_id, u_id=u_id)
+    if bool(result):
+        return result[0]
 
 
 def set_controller_access(c_name, username, access):

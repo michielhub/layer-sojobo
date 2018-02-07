@@ -782,6 +782,9 @@ async def controller_revoke(token, controller, username):
 
 def set_models_access(token, controller, user, accesslist):
     for mod in accesslist:
+        print("========DEBUGINGG=========")
+        print("mod is:")
+        print(mod)
         if model_exists(controller, mod['name']):
             if not m_access_exists(mod['access']):
                 abort(400, 'Access Level {} is not supported. Change access for model {}'.format(mod['access'], mod['name']))
