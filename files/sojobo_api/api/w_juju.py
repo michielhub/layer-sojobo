@@ -31,7 +31,7 @@ from juju.errors import JujuAPIError, JujuError
 from juju.model import Model
 from sojobo_api.api import w_errors as errors, w_datastore as datastore
 from sojobo_api import settings
-
+import time
 
 ################################################################################
 # TENGU FUNCTIONS
@@ -183,6 +183,7 @@ def check_constraints(data):
 
 
 async def authenticate(api_key, auth):
+    time1 = time.time()
     error = errors.unauthorized()
     if api_key == settings.API_KEY:
         if auth is None:
@@ -202,9 +203,17 @@ async def authenticate(api_key, auth):
                     controller = Controller_Connection(token, controllers[randint(0, len(controllers) - 1)]["_key"])
                     async with controller.connect(token):  #pylint: disable=E1701
                         pass
+                    time2 = time.time()
+                    print("===== TIMING =====")
+                    print("MADE CONNECTION WITH CONTROLLER")
+                    print ('%s function took %0.3f ms' % ("authenticate", (time2-time1)*1000.0))
                     return token
                 else:
                     if token.username == settings.JUJU_ADMIN_USER and token.password == settings.JUJU_ADMIN_PASSWORD:
+                        time2 = time.time()
+                        print("===== TIMING =====")
+                        print("MADE NO CONNECTION WITH CONTROLLER")
+                        print ('%s function took %0.3f ms' % ("authenticate", (time2-time1)*1000.0))
                         return token
                     else:
                         abort(error[0], error[1])

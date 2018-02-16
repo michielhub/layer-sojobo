@@ -313,6 +313,11 @@ def set_controller_state(c_name, state, endpoints=None, uuid=None, ca_cert=None)
 
 
 def destroy_controller(c_name):
+    controller = get_controller(c_name)
+    # Remove all the models that the controller has.
+    for m_key in controller['models']:
+        remove_model_m_col(m_key)
+        remove_edges_model_access(m_key)
     remove_edges_controller_access(c_name)
     remove_controller_c_col(c_name)
 
@@ -421,7 +426,7 @@ def get_all_models(c_name):
 
 def delete_model(c_name, m_key):
     remove_model_m_col(m_key)
-    remove_edges_models_access(m_key)
+    remove_edges_model_access(m_key)
     remove_model_from_controller(c_name, m_key)
 
 
@@ -431,7 +436,7 @@ def remove_model_m_col(m_key):
     execute_aql_query(aql, model=m_key)
 
 
-def remove_edges_models_access(m_key):
+def remove_edges_model_access(m_key):
     """Removes all Edges from the collection 'modelAccess' that contain
     the given model."""
     m_id = "models/" + m_key
